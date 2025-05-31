@@ -1,10 +1,15 @@
-import React from "react";
-import Input from "../assets/commonComponent/Input";
-import PasswordInput from "../assets/commonComponent/PasswordInput";
+import Input from "../../assets/commonComponent/Input";
+import PasswordInput from "../../assets/commonComponent/PasswordInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { postsignup } from "./SignUpSaga";
 
 function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -15,17 +20,20 @@ function Signup() {
     validationSchema: Yup.object({
       firstName: Yup.string()
         .max(15, "Must be 15 characters or less")
-        .required("Required"),
+        .required("First Name Should Not Be Empty"),
       lastName: Yup.string()
         .max(20, "Must be 20 characters or less")
-        .required("Required"),
-      email: Yup.string().email("Invalid email address").required("Required"),
+        .required("Last Name Should Not Be Empty"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email Is Required"),
       password: Yup.string()
         .min(6, "Must be at least 6 characters")
-        .required("Required"),
+        .required("Password Is Required"),
     }),
+
     onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+      dispatch(postsignup({ values, navigate }));
     },
   });
 
@@ -52,7 +60,11 @@ function Signup() {
           placeholder="Enter your first name"
           value={formik.values.firstName}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          touched={formik.touched.firstName}
+          error={formik.errors.firstName}
         />
+
         <Input
           label="Last Name"
           name="lastName"
@@ -60,6 +72,9 @@ function Signup() {
           placeholder="Enter your last name"
           value={formik.values.lastName}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          touched={formik.touched.lastName}
+          error={formik.errors.lastName}
         />
         <Input
           label="Email"
@@ -68,13 +83,17 @@ function Signup() {
           placeholder="Enter your email"
           value={formik.values.email}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          touched={formik.touched.email}
+          error={formik.errors.email}
         />
         <PasswordInput
-          autoComplete="new-password"
           name="password"
           value={formik.values.password}
           onChange={formik.handleChange}
-          placeholder="Enter your password"
+          onBlur={formik.handleBlur}
+          error={formik.errors.password}
+          touched={formik.touched.password}
         />
 
         <button
@@ -86,9 +105,9 @@ function Signup() {
 
         <p className="text-center text-sm text-gray-600 mt-2">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login here
-          </a>
+          </Link>
         </p>
       </form>
     </div>

@@ -4,8 +4,11 @@ type PasswordInputProps = {
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   autoComplete?: string; // <-- Add this line
+  error?: string;
+  touched?: boolean;
 };
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -13,6 +16,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   name,
   value,
   onChange,
+  onBlur,
+  error,
+  touched,
   placeholder = "Enter your password",
   autoComplete = "new-password", // default to prevent autofill
 }) => {
@@ -36,6 +42,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           id={name}
           name={name}
           value={value}
+          onBlur={onBlur}
           onChange={onChange}
           placeholder={placeholder}
           autoComplete={autoComplete} // <-- Apply here
@@ -47,6 +54,13 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
             borderRadius: "4px",
           }}
         />
+        {touched && error && (
+          <div
+            style={{ color: "red", marginTop: "0.25rem", fontSize: "0.875rem" }}
+          >
+            {error}
+          </div>
+        )}
 
         <button
           type="button"

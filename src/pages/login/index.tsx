@@ -1,22 +1,29 @@
-import React from "react";
-import Input from "../assets/commonComponent/Input";
-import PasswordInput from "../assets/commonComponent/PasswordInput";
+import Input from "../../assets/commonComponent/Input";
+import PasswordInput from "../../assets/commonComponent/PasswordInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginPost } from "./LoginSaga";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email Is Required"),
       password: Yup.string()
-        .min(6, "Must be at least 6 characters")
-        .required("Required"),
+        // .min(6, "Must be at least 6 characters")
+        .required("Password Is Required"),
     }),
     onSubmit: (values) => {
+      dispatch(loginPost({ values, navigate }));
       console.log("Form submitted with values:", values);
     },
   });
@@ -43,6 +50,9 @@ function Login() {
           type="email"
           placeholder="Enter your email"
           value={formik.values.email}
+          onBlur={formik.handleBlur}
+          error={formik.errors.email}
+          touched={formik.touched.email}
           onChange={formik.handleChange}
         />
         <PasswordInput
@@ -50,6 +60,9 @@ function Login() {
           name="password"
           value={formik.values.password}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.errors.password}
+          touched={formik.touched.password}
           placeholder="Enter your password"
         />
 
@@ -62,9 +75,9 @@ function Login() {
 
         <p className="text-center text-sm text-gray-600 mt-2">
           Dont have an account yet?{"  "}
-          <a href="/signUp" className=" text-blue-600 hover:underline">
+          <Link to="/signUp" className=" text-blue-600 hover:underline">
             Sign Up
-          </a>
+          </Link>
         </p>
       </form>
     </div>
