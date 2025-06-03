@@ -15,7 +15,6 @@ export const { loginPost } = {
 };
 
 function* loginUserPostAsync(action) {
-  console.log("Action", action);
   try {
     const { values, navigate } = action?.payload;
     const response = yield LoginDataService.postLogin(values);
@@ -29,8 +28,10 @@ function* loginUserPostAsync(action) {
       navigate("/");
     }
   } catch (error) {
-    console.log("error", error);
+    console.log("ewrroe", error);
+
     toast.error(error?.response?.data?.message || "Login failed");
+  } finally {
   }
 }
 
