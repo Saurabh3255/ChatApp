@@ -7,10 +7,6 @@ import { getUserDetails } from "../pages/Home/UserSaga";
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userDetails } = useSelector(
-    (state: any) => state[componentKey] || {}
-  );
-  console.log("user Details", userDetails);
 
   useEffect(() => {
     const checkUser = localStorage.getItem("token");
@@ -21,13 +17,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  return (
-    <div>
-      <p>Name:{userDetails?.firstName + " " + userDetails?.lastName}</p>
-      <p>Email:{userDetails?.email}</p>
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
 
 export default ProtectedRoute;

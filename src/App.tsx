@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { componentKey, setLoaderState } from "./SliceForLoader/loaderSlice";
 import { useEffect } from "react";
 import axios from "axios";
+import Profile from "./pages/Home/HomeComponent/Profile";
 
 function App() {
   const dispatch = useDispatch();
@@ -66,6 +67,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

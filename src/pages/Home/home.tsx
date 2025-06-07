@@ -1,11 +1,19 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getUserDetails } from "./UserSaga";
-
+import React from "react";
+import Header from "./HomeComponent/header";
+import { useSelector } from "react-redux";
+import { componentKey } from "./userSlice";
 function Home() {
+  const { userDetails } = useSelector(
+    (state: any) => state[componentKey] || {}
+  );
+  console.log("userDetails", userDetails);
+
   return (
     <div>
-      <h2>Hello World</h2>
+      <Header user={userDetails}></Header>
+      {/* Slider Layout  */}
+
+      {/* Chat Area Layout */}
     </div>
   );
 }
