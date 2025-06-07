@@ -24,7 +24,6 @@ function Login() {
     }),
     onSubmit: (values) => {
       dispatch(loginPost({ values, navigate }));
-      console.log("Form submitted with values:", values);
     },
   });
 

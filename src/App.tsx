@@ -12,16 +12,14 @@ import axios from "axios";
 
 function App() {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state[componentKey]?.isloader); // Note the change here to access isloader
+  const isLoading = useSelector((state: any) => state[componentKey]?.isloader);
 
   useEffect(() => {
     // Store original request function
     const axiosRequest = axios.Axios.prototype.request;
 
-    // Request interceptor
     const requestInterceptor = axios.interceptors.request.use(
       function (config) {
-        // Add a custom header or flag to identify API requests
         config.metadata = { isApiRequest: true };
         dispatch(setLoaderState(true));
         return config;

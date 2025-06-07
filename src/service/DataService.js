@@ -97,6 +97,7 @@ class DataService {
   }
 
   _config(config = {}) {
+    const token = DataService.getToken();
     return {
       headers: {
         "Content-Type": "application/json",

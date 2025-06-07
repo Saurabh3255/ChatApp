@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 export const { postsignup } = {
   postsignup: (payload) => {
-    console.log("payload", payload);
-
     return {
       type: "USER/SIGNUP",
       payload,
@@ -17,7 +15,6 @@ export const { postsignup } = {
 };
 
 function* signUpUserAsync(action) {
-  console.log("action", action);
   try {
     const { values, navigate } = action?.payload;
     const response = yield AuthDataService.postsignup(values);

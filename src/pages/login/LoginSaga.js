@@ -22,7 +22,7 @@ function* loginUserPostAsync(action) {
     if (response?.status === 200) {
       toast.success(response?.data?.message || "Login successful!");
 
-      localStorage.setItem("token", response?.token);
+      localStorage.setItem("token", response?.data?.token);
       localStorage.setItem("user", JSON.stringify(response?.data?.user));
       //   window.location.href = "/";
       navigate("/");
