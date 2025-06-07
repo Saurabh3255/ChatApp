@@ -8,10 +8,14 @@ const { actions } = store.reducerManager.add({
     setUserDetails: (state, action) => {
       state.userDetails = action.payload;
     },
+    setAllUserDetails: (state, action) => {
+      state.alluserDetails = action.payload;
+    },
   },
   initialReducerState: {
     userDetails: {},
+    alluserDetails: [],
   },
 });
 
-export const { setUserDetails } = actions;
+export const { setUserDetails, setAllUserDetails } = actions;

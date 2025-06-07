@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { componentKey } from "../pages/Home/UserSlice";
+import { componentKey } from "../pages/Home/userSlice";
 import { getUserDetails } from "../pages/Home/UserSaga";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {

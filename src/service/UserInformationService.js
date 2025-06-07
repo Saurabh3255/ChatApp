@@ -4,7 +4,10 @@ import AppDataService from "./AppDataService";
 
 export default class UserInformationService {
   static async getLoginUserInforamtion() {
-    console.log("user logini info called in service");
     return await AppDataService.get(`api/user/get-logged-user`);
+  }
+
+  static async getAllUserInformation() {
+    return await AppDataService.get(`api/user/get-all-users`);
   }
 }
