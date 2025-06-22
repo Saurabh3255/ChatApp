@@ -11,11 +11,15 @@ const { actions } = store.reducerManager.add({
     setAllUserDetails: (state, action) => {
       state.alluserDetails = action.payload;
     },
+    setSelectedChat: (state, action) => {
+      state.selectedChat = action?.payload;
+    },
   },
   initialReducerState: {
     userDetails: {},
     alluserDetails: [],
+    selectedChat: null,
   },
 });
 
-export const { setUserDetails, setAllUserDetails } = actions;
+export const { setUserDetails, setAllUserDetails, setSelectedChat } = actions;

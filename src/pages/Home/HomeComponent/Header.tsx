@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
   };
 
   return (
-    <header className="flex items-center justify-between w-full h-16 px-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md">
+    <header className="flex items-center justify-between w-full h-16 p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md">
       <div className="flex items-center space-x-2">
         <div className="flex items-center justify-center w-10 h-10 bg-white rounded-full">
           <svg

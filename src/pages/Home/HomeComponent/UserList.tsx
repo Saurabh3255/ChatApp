@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserDetails } from "../UserSaga";
 import { componentKey } from "../userSlice";
+import { componentKey as chatComponentKey } from "./ChartSlice";
 
 interface User {
   id: string;
@@ -26,6 +27,16 @@ const UserSearchList: React.FC<UserSearchListProps> = ({
 }) => {
   const dispatch = useDispatch();
   const { alluserDetails } = useSelector((state: any) => state[componentKey]);
+  console.log("alluserDetails", alluserDetails);
+  const getUser = localStorage.getItem("user");
+  const currentUser = getUser?._id;
+  console.log("currentUser", currentUser);
+
+  const { allchartDetails } = useSelector(
+    (state: any) => state[chatComponentKey]
+  );
+  console.log("alluserDetails", allchartDetails);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
@@ -107,7 +118,7 @@ const UserSearchList: React.FC<UserSearchListProps> = ({
                 </div>
                 <p className="text-sm text-gray-500 truncate">{user.email}</p>
               </div>
-
+              {/* {all&&()} */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();

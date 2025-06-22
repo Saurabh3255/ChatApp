@@ -3,19 +3,21 @@ import Header from "./HomeComponent/header";
 import { useSelector } from "react-redux";
 import { componentKey } from "./userSlice";
 import SideBar from "./HomeComponent/SideBar";
+import ChartArea from "./HomeComponent/Chart";
 function Home() {
   const { userDetails } = useSelector((state: any) => state[componentKey]);
-  console.log("userDetails", userDetails);
-
+  const { selectedChat } = useSelector((state: any) => state[componentKey]);
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <Header user={userDetails}></Header>
       {/* Slider Layout  */}
-      <SideBar
-        onSelectUser={function (user: User): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+
+      <div className="flex flex-1">
+        {" "}
+        <SideBar currentUserId={userDetails?._id} />
+        {selectedChat && <ChartArea />}
+      </div>
+
       {/* Chat Area Layout */}
     </div>
   );

@@ -1,7 +1,8 @@
 import React, { type ReactNode, type MouseEvent } from "react";
 
 type ButtonProps = {
-  children: ReactNode;
+  label?: string;
+  children?: ReactNode;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
