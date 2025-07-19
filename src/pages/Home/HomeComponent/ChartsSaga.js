@@ -1,4 +1,4 @@
-import { takeLatest, put, all, select } from "redux-saga/effects";
+import { takeLatest, put, all, select, call } from "redux-saga/effects";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
 import ChartService from "../../../service/ChartsService";
@@ -82,6 +82,7 @@ function* createNewMsgAsync(action) {
     const response = yield ChartService.createNewMsg(action?.payload);
     if (response?.data?.success) {
       toast.success(response?.data?.message || "Message sent successfully");
+      yield put(getAllMessage(action?.payload?.chatId));
     }
   } catch (error) {
     console.error("Error in startNewChartAsync:", error);

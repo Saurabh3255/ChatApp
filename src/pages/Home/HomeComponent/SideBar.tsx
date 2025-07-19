@@ -70,7 +70,7 @@ const SideBar: React.FC<UserSearchListProps> = ({
   };
 
   const isUserInChat = (userId: string) => {
-    return allchartDetails.find((chat: any) =>
+    return allchartDetails?.find((chat: any) =>
       chat?.members?.some((m: any) => m._id === userId)
     );
   };

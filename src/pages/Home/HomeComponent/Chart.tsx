@@ -4,6 +4,7 @@ import { componentKey } from "../userSlice";
 import { componentKey as chartComponentKey } from "./ChartSlice";
 import { getAllMessage, sendMessagePost } from "./ChartsSaga";
 import Button from "../../../assets/commonComponent/Button";
+import moment from "moment";
 
 const ChartArea = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const ChartArea = () => {
   );
 
   const { allMessage } = useSelector((state: any) => state[chartComponentKey]);
+  console.log("All Messages:", allMessage);
 
   const selectedUser = selectedChat?.members?.find(
     (u: any) => u._id !== userDetails?._id
@@ -41,6 +43,17 @@ const ChartArea = () => {
       console.error("Error sending message:", error);
     }
   };
+  const formatTime = (time: any) => {
+    const now = moment();
+    const diff = now.diff(moment(time), "days");
+    if (diff < 1) {
+      return moment(time).format("hh:mm A");
+    } else if (diff === 1) {
+      return "Yesterday";
+    } else {
+      return moment(time).format("MMM D, hh:mm A");
+    }
+  };
   return (
     <div className="flex flex-col h-[calc(100vh-52px)] w-full p-5 bg-gray-100 rounded-lg shadow">
       {selectedChat ? (
@@ -55,9 +68,31 @@ const ChartArea = () => {
 
           {/* Chat Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md shadow-inner">
-            <div className="text-gray-500 text-center">
-              Chart Area (Messages will appear here)
-            </div>
+            {allMessage !== null && (
+              <div className="flex flex-col gap-3">
+                {allMessage?.map((message: any, index: number) => (
+                  <div
+                    key={index}
+                    className={`p-3 rounded-lg max-w-[70%] ${
+                      message.sender === userDetails?._id
+                        ? "bg-blue-500 text-white self-end ml-[100px] rounded-tl-[10px] rounded-tr-[0px]"
+                        : "bg-gray-200 text-gray-800 self-start mr-[100px] rounded-bl-[0px]"
+                    }`}
+                  >
+                    <p>{message?.text}</p>
+                    <span
+                      className={`text-xs text-gray-400 block mt-1 text-right ${
+                        message.sender === userDetails?._id
+                          ? "bg-blue-500 text-white self-end"
+                          : "bg-gray-200 text-gray-800 self-start"
+                      }`}
+                    >
+                      {formatTime(message?.createdAt)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Message Input Area */}
