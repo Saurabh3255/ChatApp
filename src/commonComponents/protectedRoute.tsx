@@ -12,6 +12,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkUser = localStorage.getItem("token");
     if (checkUser) {
+      console.log("getUserDetails calling");
       dispatch(getUserDetails());
       dispatch(getAllChartDetails());
     } else {

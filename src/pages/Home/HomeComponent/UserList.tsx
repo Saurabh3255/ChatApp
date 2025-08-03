@@ -27,15 +27,13 @@ const UserSearchList: React.FC<UserSearchListProps> = ({
 }) => {
   const dispatch = useDispatch();
   const { alluserDetails } = useSelector((state: any) => state[componentKey]);
-  console.log("alluserDetails", alluserDetails);
   const getUser = localStorage.getItem("user");
   const currentUser = getUser?._id;
-  console.log("currentUser", currentUser);
 
   const { allchartDetails } = useSelector(
     (state: any) => state[chatComponentKey]
   );
-  console.log("alluserDetails", allchartDetails);
+  console.log("All Chart Details:", allchartDetails);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -63,6 +61,19 @@ const UserSearchList: React.FC<UserSearchListProps> = ({
 
   const getInitials = (firstName: string, lastName: string): string => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  };
+
+  const getLastMessage = (userId: string) => {
+    if (!allchartDetails?.data || !currentUser) return "";
+
+    const chat = allchartDetails.data.find((chat: any) => {
+      const memberIds = chat.member.map((m: any) => m._id);
+      return memberIds.includes(currentUser) && memberIds.includes(userId);
+    });
+
+    if (!chat) return "";
+
+    return chat.lastMessage?.text || "";
   };
 
   return (
@@ -116,7 +127,9 @@ const UserSearchList: React.FC<UserSearchListProps> = ({
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                <p className="text-sm text-gray-500 truncate">
+                  {getLastMessage(user?.id) || user.email}
+                </p>
               </div>
               {/* {all&&()} */}
               <button

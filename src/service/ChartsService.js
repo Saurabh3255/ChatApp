@@ -17,4 +17,9 @@ export default class ChartService {
   static async getAllMessage(id) {
     return await AppDataService.get(`api/message/get-all-messages/${id}`);
   }
+  static async readUnReadMessage(chatId) {
+    return await AppDataService.post(`api/chat/clear-unread-message`, {
+      chatId,
+    });
+  }
 }

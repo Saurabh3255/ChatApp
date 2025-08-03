@@ -1,10 +1,12 @@
-import React, { useState, useEffect, type ChangeEvent } from "react";
+import React, { useState, useEffect, type ChangeEvent, use } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserDetails } from "../UserSaga";
 import { componentKey, setSelectedChat } from "../userSlice";
 import { componentKey as chatComponentKey } from "./ChartSlice";
-import { startNewChartPost } from "./ChartsSaga";
+import { readMessgae, startNewChartPost } from "./ChartsSaga";
+import moment from "moment";
+import { CheckIcon } from "./Cheked";
 
 interface User {
   _id: string;
@@ -31,7 +33,6 @@ const SideBar: React.FC<UserSearchListProps> = ({
   const { allchartDetails } = useSelector(
     (state: any) => state[chatComponentKey]
   );
-  console.log("currentUserId", currentUserId);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -84,7 +85,6 @@ const SideBar: React.FC<UserSearchListProps> = ({
   const handleStartChart = async (selectedUserId: string) => {
     try {
       if (!currentUserId) {
-        console.error("No current user ID provided");
         return;
       }
       // Dispatch action to start chat
@@ -104,6 +104,52 @@ const SideBar: React.FC<UserSearchListProps> = ({
       dispatch(setSelectedChat(chat));
     }
   }
+
+  const getLastMEssage = (userId: string) => {
+    const chat = allchartDetails?.find((chat: any) =>
+      chat.members.map((m: any) => m._id).includes(userId)
+    );
+    if (!chat || !chat.lastMessage) {
+      return "";
+    } else {
+      const messagePrefix =
+        chat.lastMessage?.sender === currentUserId ? "You: " : "";
+      return messagePrefix + chat.lastMessage?.text?.substring(0, 25) || "";
+    }
+  };
+
+  const chat = allchartDetails?.find((chat: any) =>
+    chat.members.map((m: any) => m._id).includes(currentUserId)
+  );
+
+  const getUnreadChatByUser = (userId: string) => {
+    return allchartDetails?.find(
+      (chat: any) =>
+        chat?.unreadMessageCount > 0 &&
+        chat.members?.some((m: any) => m._id === userId)
+    );
+  };
+
+  const getLastMessageTimeStamp = (userId: string) => {
+    const chat = allchartDetails?.find((chat: any) =>
+      chat.members.map((m: any) => m._id).includes(userId)
+    );
+    if (!chat || !chat.lastMessage) {
+      return "";
+    } else {
+      return moment(chat.lastMessage?.createdAt).fromNow();
+    }
+  };
+
+  function getReadedUserIds(selectedUserId: any) {
+    dispatch(readMessgae(selectedUserId));
+  }
+
+  const checkREadMessage = (userId: string) => {
+    return allchartDetails?.find(
+      (chat: any) => chat.lastMessage.readBy === true
+    );
+  };
   return (
     <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
       {/* Search Bar */}
@@ -130,7 +176,10 @@ const SideBar: React.FC<UserSearchListProps> = ({
         ) : usersToDisplay.length > 0 ? (
           usersToDisplay.map((user) => (
             <div
-              onClick={() => openChat(user._id)}
+              onClick={() => {
+                openChat(user._id);
+                getReadedUserIds(chat?._id);
+              }}
               key={user._id}
               className={`flex items-center p-4 hover:bg-gray-100 cursor-pointer transition-colors ${
                 user._id === currentUserId ? "bg-blue-50" : ""
@@ -152,14 +201,29 @@ const SideBar: React.FC<UserSearchListProps> = ({
                   <h3 className="font-medium text-gray-900">
                     {user.firstName} {user.lastName}
                   </h3>
+
                   {user.lastSeen && (
                     <span className="text-xs text-gray-500">
                       {user.isOnline ? "Online" : `Last seen ${user.lastSeen}`}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                <p className="text-sm text-gray-500 truncate">
+                  {getLastMEssage(user._id) || user.email}
+                </p>
               </div>
+              <div className="text-sm text-gray-500 truncate flex flex-col items-center gap-2">
+                {getLastMessageTimeStamp(user._id).toString()}
+
+                {getUnreadChatByUser(user._id) && (
+                  <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
+                    {getUnreadChatByUser(user._id)?.unreadMessageCount} unread
+                  </span>
+                )}
+              </div>
+              {/* {user._id === currentUserId && checkREadMessage(user._id) ? (
+                  <CheckIcon />
+                ) : null} */}
 
               {!isUserInChat(user._id) && user._id !== currentUserId && (
                 <button

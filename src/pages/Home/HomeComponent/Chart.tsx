@@ -1,19 +1,24 @@
 import React, { use, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { componentKey } from "../userSlice";
-import { componentKey as chartComponentKey } from "./ChartSlice";
+import {
+  componentKey as chartComponentKey,
+  setAllMessages,
+} from "./ChartSlice";
 import { getAllMessage, sendMessagePost } from "./ChartsSaga";
-import Button from "../../../assets/commonComponent/Button";
 import moment from "moment";
+import { CheckIcon } from "./Cheked";
 
-const ChartArea = () => {
+interface ChartProps {
+  socket: any;
+}
+const ChartArea = ({ socket }: ChartProps) => {
   const dispatch = useDispatch();
   const { selectedChat, userDetails } = useSelector(
     (state: any) => state[componentKey]
   );
 
   const { allMessage } = useSelector((state: any) => state[chartComponentKey]);
-  console.log("All Messages:", allMessage);
 
   const selectedUser = selectedChat?.members?.find(
     (u: any) => u._id !== userDetails?._id
@@ -23,7 +28,12 @@ const ChartArea = () => {
   const handleAllMessages = () => {
     dispatch(getAllMessage(selectedChat?._id));
   };
-
+  useEffect(() => {
+    socket.off("receive-message").on("receive-message", (data: any) => {
+      const newMessages = [...allMessage, data];
+      dispatch(setAllMessages(newMessages));
+    });
+  }, [allMessage]);
   useEffect(() => {
     if (selectedChat) {
       handleAllMessages();
@@ -37,6 +47,12 @@ const ChartArea = () => {
         sender: userDetails?._id,
         text: messages,
       };
+      socket.emit("send-message", {
+        ...message,
+        members: selectedChat?.members?.map((m: any) => m._id),
+        read: false,
+        createdAt: moment().format("DD-MM-YYYY hh:mm:ss"),
+      });
       dispatch(sendMessagePost(message));
       setMessages("");
     } catch (error) {
@@ -54,6 +70,7 @@ const ChartArea = () => {
       return moment(time).format("MMM D, hh:mm A");
     }
   };
+
   return (
     <div className="flex flex-col h-[calc(100vh-52px)] w-full p-5 bg-gray-100 rounded-lg shadow">
       {selectedChat ? (
@@ -88,6 +105,11 @@ const ChartArea = () => {
                       }`}
                     >
                       {formatTime(message?.createdAt)}
+                      {message.sender === userDetails?._id && message.read && (
+                        <div className="flex-end">
+                          <CheckIcon className="h-5 w-5  text-amber-50" />
+                        </div>
+                      )}
                     </span>
                   </div>
                 ))}

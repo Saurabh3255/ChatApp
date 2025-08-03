@@ -22,12 +22,12 @@ export const { getUserDetails, getAllUserDetails } = {
 function* getLoginUserDetailsAsync() {
   try {
     const response = yield UserInformationService.getLoginUserInforamtion();
+
     if (response) {
       yield put(setUserDetails(response?.data?.data));
     }
   } catch (error) {
     toast.error(error?.response?.data?.message);
-    yield put(setUserDetails({}));
     window.location.href = "/login";
   }
 }

@@ -12,6 +12,7 @@ export const {
   startNewChartPost,
   sendMessagePost,
   getAllMessage,
+  readMessgae,
 } = {
   getAllChartDetails: (payload) => {
     return {
@@ -36,6 +37,13 @@ export const {
   getAllMessage: (payload) => {
     return {
       type: "USER/GET_ALL_MESSAGE",
+      payload,
+    };
+  },
+  readMessgae: (payload) => {
+    console.log("readMessgae payload", payload);
+    return {
+      type: "USER/READ_MESSAGE",
       payload,
     };
   },
@@ -108,12 +116,27 @@ function* getAllChatsAsync(action) {
   }
 }
 
+function* readMessageAsync(action) {
+  console.log("readMessageAsync action", action?.payload);
+  try {
+    const response = yield ChartService.readUnReadMessage(action?.payload);
+    if (response) {
+      // yield put(setChartDetails(data));
+      yield put(getAllChartDetails());
+    }
+  } catch (error) {
+    console.error("Error in readMessageAsync:", error);
+    toast.error(error?.response?.data?.message || "Failed to fetch messages");
+  }
+}
+
 function* rootSaga() {
   yield all([
     takeLatest(getAllChartDetails().type, getAllChatsListASync),
     takeLatest(startNewChartPost().type, startNewChartAsync),
     takeLatest(sendMessagePost().type, createNewMsgAsync),
     takeLatest(getAllMessage().type, getAllChatsAsync),
+    takeLatest(readMessgae().type, readMessageAsync),
   ]);
 }
 
